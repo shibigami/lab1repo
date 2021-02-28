@@ -15,6 +15,15 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIRECTORY})
 add_subdirectory("lib/sfml")
 set(SFML_INCS "lib/sfml/include")
 link_directories("${CMAKE_BINARY_DIR}/lib/sfml/lib")
+# Maths lib
+add_library(lib_maths INTERFACE)
+target_sources(lib_maths INTERFACE "${CMAKE_SOURCE_DIR}/lib_maths/maths.h")
+target_include_directories(lib_maths INTERFACE "${CMAKE_SOURCE_DIR}/lib_maths" SYSTEM INTERFACE ${SFML_INCS})
+## Tile loader lib
+file(GLOB_RECURSE SOURCE_FILES lib_tile_level_loader/*.cpp lib_tile_level_loader/*.h)
+add_library(lib_tile_level_loader STATIC ${SOURCE_FILES})
+target_include_directories(lib_tile_level_loader INTERFACE "${CMAKE_SOURCE_DIR}/lib_tile_level_loader/" )
+target_link_libraries(lib_tile_level_loader lib_maths sfml-graphics)
 
 #### Practical 1 ####
 file(GLOB_RECURSE SOURCES practical_1/*.cpp practical_1/*.h)
@@ -27,3 +36,15 @@ file(GLOB_RECURSE SOURCES SpaceInvadeUs/*.cpp SpaceInvadeUs/*.h)
 add_executable(SpaceInvadeUs ${SOURCES} )
 target_include_directories(SpaceInvadeUs SYSTEM PRIVATE ${SFML_INCS})
 target_link_libraries(SpaceInvadeUs sfml-graphics)
+
+## Tile engine
+file(GLOB_RECURSE SOURCES TileEngine/*.cpp TileEngine/*.h)
+add_executable(TileEngine ${SOURCES} )
+target_include_directories(TileEngine SYSTEM PRIVATE ${SFML_INCS})
+target_link_libraries(TileEngine lib_tile_level_loader sfml-graphics)
+
+## Pacman
+file(GLOB_RECURSE SOURCES Pacman/*.cpp Pacman/*.h)
+add_executable(Pacman ${SOURCES} )
+target_include_directories(Pacman SYSTEM PRIVATE ${SFML_INCS})
+target_link_libraries(Pacman sfml-graphics)
