@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include "system_renderer.h"
 using namespace std;
 using namespace sf;
 
@@ -10,3 +11,18 @@ void Entity::Update(const double dt) {
 }
 
 Entity::Entity(unique_ptr<Shape> s) :_shape(std::move(s)) {}
+
+void Entity::EntityManager::Update(double dt)
+{
+	for (auto& i : list) 
+	{
+		i.get()->Update(dt);
+	}
+}
+
+void Entity::EntityManager::Render()
+{
+	for (auto& i : list) {
+		i.get()->Render();
+	}
+}

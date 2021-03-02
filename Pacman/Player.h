@@ -8,5 +8,5 @@ private:
 public:
 	void Update(double dt) override;
 	Player();
-	void Render(sf::RenderWindow& window) const override;
+	void Render() const override;
 };

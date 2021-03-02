@@ -4,6 +4,8 @@
 #include "system_renderer.h"
 #include "Player.h"
 #include "Ghost.h"
+#include "pacman.h"
+#include "main.h"
 
 
 using namespace sf;
@@ -18,35 +20,26 @@ const Keyboard::Key controls[5] =
     Keyboard::Down,  //player 1 down
     Keyboard::P    //player/cpu swap
 };
-const int gameWidth = 800;
-const int gameHeight = 600;
 
 //game window
 sf::RenderWindow window(sf::VideoMode(gameWidth, gameHeight), "Pacman");
 
-Entity::EntityManager em;
-shared_ptr<Player> player;
-Ghost ghost;
-
+std::shared_ptr<Scene> gameScene;
+std::shared_ptr<Scene> menuScene;
+std::shared_ptr<Scene> activeScene;
 
 void Load()
 {
     //init system_renderer
     Renderer::initialise(window);
 
-    //player
-    em.list.push_back(player);
-    /*
-    //ghosts
-    ghost = new Ghost(64,sf::Color::Red, sf::Vector2f(150, 50));
-    entities.push_back(ghost);
-    ghost = new Ghost(64,sf::Color::Green, sf::Vector2f(50, 150));
-    entities.push_back(ghost);
-    ghost = new Ghost(64,sf::Color::Magenta, sf::Vector2f(150, 150));
-    entities.push_back(ghost);
-    ghost = new Ghost(64,sf::Color::Blue, sf::Vector2f(50, 50));
-    entities.push_back(ghost);
-    */
+    //Load Scene-Local Assets
+    gameScene.reset(new GameScene());
+    menuScene.reset(new MenuScene());
+    gameScene->Load();
+    menuScene->Load();
+    //Start at the main menu
+    activeScene = menuScene;
 }
 
 void Reset()
@@ -77,13 +70,18 @@ void Update(RenderWindow& window)
 
     //update code
     //entity manager
-    //em.update(dt);
+    //em.Update(dt);
+    //Renderer::update(dt);
+    activeScene->Update(dt);
 }
 
 void Render(sf::RenderWindow& window)
 {
     //entity manager
-    //em.render(window);
+    //em.Render();
+
+    activeScene->Render();
+    //flush to screen
     Renderer::render();
 }
 

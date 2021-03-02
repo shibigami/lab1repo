@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "system_renderer.h"
 using namespace sf;
 using namespace std;
 
@@ -23,8 +24,9 @@ Player::Player()
 	:_speed(200.0f), Entity(make_unique<CircleShape>(10.0f)) {
 	_shape->setFillColor(Color::Yellow);
 	_shape->setOrigin(Vector2f(25.0f, 25.0f));
+	_shape->setPosition(Vector2f(100.0f, 100.0f));
 }
 
-void Player::Render(sf::RenderWindow& window) const {
-	window.draw(*_shape);
+void Player::Render() const {
+	Renderer::queue(_shape.get());
 }
