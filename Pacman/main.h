@@ -1,4 +1,4 @@
 #pragma once
 
-const int gameWidth = 800;
-const int gameHeight = 600;
+const int gameWidth = 700;
+const int gameHeight = 800;

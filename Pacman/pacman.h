@@ -1,5 +1,6 @@
 #include <memory>
 #include "scene.h"
+#include "Entity.h"
 
 extern std::shared_ptr<Scene> gameScene;
 extern std::shared_ptr<Scene> menuScene;
@@ -7,7 +8,6 @@ extern std::shared_ptr<Scene> activeScene;
 
 class MenuScene :public Scene {
 private:
-	sf::Text text;
 
 public:
 	MenuScene() = default;
@@ -18,8 +18,9 @@ public:
 
 class GameScene :public Scene {
 private:
-	sf::Text text;
 	sf::Clock scoreClock;
+	std::shared_ptr<Entity> player;
+	std::vector<std::shared_ptr<Entity>> ghosts;
 	void Respawn();
 
 public :
@@ -27,4 +28,5 @@ public :
 	void Update(double dt) override;
 	void Render() override;
 	void Load() override;
+	void UpdateScore();
 };

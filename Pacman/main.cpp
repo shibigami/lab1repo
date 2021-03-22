@@ -7,7 +7,6 @@
 #include "pacman.h"
 #include "main.h"
 
-
 using namespace sf;
 using namespace std;
 

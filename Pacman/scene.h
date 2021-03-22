@@ -1,4 +1,4 @@
-#include "Entity.h"
+#include "ecm.h"
 
 class Scene {
 public:
@@ -11,5 +11,5 @@ public:
 	std::vector<std::shared_ptr<Entity>>& getEnts();
 
 protected:
-	Entity::EntityManager _ents;
+	EntityManager _ents;
 };

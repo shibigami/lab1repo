@@ -116,6 +116,27 @@ Vector2f LevelSystem::getTilePosition(Vector2ul p) {
 	return (Vector2f(p.x, p.y) * _tileSize);
 }
 
+LevelSystem::TILE LevelSystem::getTileAt(sf::Vector2f p)
+{
+	auto a = p - _offset;
+	if (a.x < 0 || a.y < 0) {
+		throw string("Tile out of range ");
+	}
+	return getTile(Vector2ul((p - _offset) / (_tileSize)));
+}
+
+std::vector<sf::Vector2ul> LevelSystem::findTiles(TILE tiletype)
+{
+	std::vector<sf::Vector2ul> foundTiles;
+
+	for (size_t y = 0; y < _height; ++y) {
+		for (size_t x = 0; x < _width; ++x) {
+			if (LevelSystem::getTile(Vector2ul(x, y)) == tiletype)foundTiles.push_back(Vector2ul(x, y));
+		}
+	}
+	return foundTiles;
+}
+
 LevelSystem::TILE LevelSystem::getTile(Vector2ul p) {
 	if (p.x > _width || p.y > _height) {
 		throw string("Tile out of range: ") + to_string(p.x) + "," + to_string(p.y) + ")";

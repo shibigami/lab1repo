@@ -3,10 +3,19 @@
 #include "Player.h"
 #include "Ghost.h"
 #include "main.h"
+#include "cmp_sprite.h"
+#include "ecm.h"
+#include "cmp_actor_movement.h"
+#include "LevelSystem.h"
+#include "cmp_enemy_ai.h"
 
 using namespace std;
 using namespace sf;
 
+#define GHOST_COUNT 4
+vector<shared_ptr<Ghost>> ghosts;
+
+sf::Text text;
 sf::Font font;
 
 void Scene::Update(double dt) { _ents.Update(dt); }
@@ -38,6 +47,16 @@ void MenuScene::Load() {
 
 void GameScene::Respawn()
 {
+    player->setPosition(ls::getTilePosition(ls::findTiles(ls::START)[0]));
+    player->getCompatibleComponent<ActorMovementComponent>()[0]
+        ->setSpeed(150.0f);
+
+    auto ghost_spawns = ls::findTiles(ls::ENEMY);
+    for (auto& g : ghosts) {
+        g->setPosition(
+            ls::getTilePosition(ghost_spawns[rand() % ghost_spawns.size()]));
+        g->getCompatibleComponent<ActorMovementComponent>()[0]->setSpeed(100.0f);
+    }
 }
 
 void GameScene::Update(double dt)
@@ -46,31 +65,56 @@ void GameScene::Update(double dt)
         activeScene = menuScene;
     }
     _ents.Update(dt);
+    UpdateScore();
 }
 
 void GameScene::Render()
 {
+    LevelSystem::Render(Renderer::getWindow());
     _ents.Render();
 }
 
 void GameScene::Load()
 {
-    //player
-    shared_ptr<Player> player(new Player());
-    _ents.list.push_back(player);
+    ls::loadLevelFile("res/pacman.txt", 25.0f);
 
-    //ghosts
-    auto ghost = new Ghost(sf::Color::Red);
-    shared_ptr<Ghost> ghost1(new Ghost(sf::Color::Red));
-    ghost1.get()->setPosition(sf::Vector2f(150.0f, 150.0f));
-    _ents.list.push_back(ghost1);
-    shared_ptr<Ghost> ghost2(new Ghost(sf::Color::Green));
-    ghost2.get()->setPosition(sf::Vector2f(50.0f, 150.0f));
-    _ents.list.push_back(ghost2);
-    shared_ptr<Ghost> ghost3(new Ghost(sf::Color::Blue));
-    ghost3.get()->setPosition(sf::Vector2f(150.0f, 50.0f));
-    _ents.list.push_back(ghost3);
-    shared_ptr<Ghost> ghost4(new Ghost(sf::Color::Cyan));
-    ghost4.get()->setPosition(sf::Vector2f(50.0f, 50.0f));
-    _ents.list.push_back(ghost4);
+        auto pl = make_shared<Entity>();
+
+        auto s = pl->addComponent<ShapeComponent>();
+        s->setShape<sf::CircleShape>(12.f);
+        s->getShape().setFillColor(Color::Yellow);
+        s->getShape().setOrigin(Vector2f(12.f, 12.f));
+
+        pl->addComponent<PlayerMovementComponent>();
+
+        player = pl;
+        _ents.list.push_back(pl);
+
+
+    const sf::Color ghost_cols[]{
+        {208,62,25},    //red Blinky
+        {219,133,28},   //orange Clyde
+        {70,191,238},   //cyan Inky
+        {234,130,229} }; //pink Pinky
+
+    for (int i = 0; i < GHOST_COUNT; ++i) 
+    {
+        auto ghost = make_shared<Entity>();
+        auto s = ghost->addComponent<ShapeComponent>();
+        s->setShape<sf::CircleShape>(12.f);
+        s->getShape().setFillColor(ghost_cols[i % 4]);
+        s->getShape().setOrigin(Vector2f(12.f, 12.f));
+
+        ghost->addComponent<EnemyAIComponent>();
+        
+        ghosts.push_back(ghost);
+        _ents.list.push_back(ghost);
+    }
+
+    Respawn();
+}
+
+void GameScene::UpdateScore()
+{
+    cout << "update score" << endl;
 }
