@@ -53,3 +53,9 @@ file(GLOB_RECURSE SOURCES Pacman/*.cpp Pacman/*.h)
 add_executable(Pacman ${SOURCES} )
 target_include_directories(Pacman SYSTEM PRIVATE ${SFML_INCS})
 target_link_libraries(Pacman sfml-graphics lib_tile_level_loader lib_ecm)
+
+## Physics
+file(GLOB_RECURSE SOURCES Physics/*.cpp Physics/*.h)
+add_executable(Physics ${SOURCES} )
+target_include_directories(Physics SYSTEM PRIVATE ${SFML_INCS})
+target_link_libraries(Physics sfml-graphics)

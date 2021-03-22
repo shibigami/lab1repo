@@ -9,4 +9,7 @@ void ShapeComponent::Render() { Renderer::queue(_shape.get()); }
 
 sf::Shape& ShapeComponent::getShape() const { return *_shape; }
 
-ShapeComponent::ShapeComponent(Entity* p) :Component(p), _shape(std::make_shared<sf::CircleShape>()) {}
+ShapeComponent::ShapeComponent(Entity* p) :Component(p), _shape(std::make_shared<sf::CircleShape>()) 
+{
+	_shape.get()->setOrigin(sf::Vector2f(_shape.get()->getLocalBounds().width, _shape.get()->getLocalBounds().height));
+}

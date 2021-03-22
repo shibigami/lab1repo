@@ -6,13 +6,19 @@ using namespace sf;
 void ActorMovementComponent::Update(double dt) {}
 
 ActorMovementComponent::ActorMovementComponent(Entity* p)
-	: _speed(100.0f), Component(p) {}
+	: _speed(100.0f), Component(p) {direction= Vector2f(0.02f* _speed, 0);
+}
 
 
 
 bool ActorMovementComponent::validMove(const sf::Vector2f& pos)
 {
-	return (LevelSystem::getTileAt(pos) != LevelSystem::WALL);
+	return (
+		LevelSystem::getTileAt(pos + Vector2f(0, -10)) != LevelSystem::WALL&&
+		LevelSystem::getTileAt(pos + Vector2f(-10, 0)) != LevelSystem::WALL&&
+		LevelSystem::getTileAt(pos + Vector2f(0, 10)) != LevelSystem::WALL&&
+		LevelSystem::getTileAt(pos + Vector2f(10, 0)) != LevelSystem::WALL
+		);
 }
 
 
@@ -38,20 +44,21 @@ void PlayerMovementComponent::Update(double dt)
 {
 	if (Keyboard::isKeyPressed(Keyboard::A)) 
 	{
-		move(Vector2f(dt * -_speed, 0));
+		direction=Vector2f(dt * -_speed, 0);
 	}
 	else if (Keyboard::isKeyPressed(Keyboard::D))
 	{
-		move(Vector2f(dt * _speed, 0));
+		direction=Vector2f(dt * _speed, 0);
 	}
 	if (Keyboard::isKeyPressed(Keyboard::W))
 	{
-		move(Vector2f(0, dt * -_speed));
+		direction=Vector2f(0, dt * -_speed);
 	}
 	else if (Keyboard::isKeyPressed(Keyboard::S))
 	{
-		move(Vector2f(0, dt * _speed));
+		direction=Vector2f(0, dt * _speed);
 	}
+	move(direction);
 }
 
 /*

@@ -6,6 +6,7 @@ class ActorMovementComponent :public Component
 protected:
 	bool validMove(const sf::Vector2f&);
 	float _speed;
+	sf::Vector2f direction;
 
 public:
 	explicit ActorMovementComponent(Entity* p);
@@ -27,12 +28,3 @@ public:
 	PlayerMovementComponent(Entity* p);
 	void Update(double dt) override;
 };
-
-/*
-class EnemyAIComponent :public ActorMovementComponent
-{
-public:
-	EnemyAIComponent(Entity* p);
-	void Update(double dt) override;
-};
-*/

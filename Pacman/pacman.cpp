@@ -48,6 +48,7 @@ void MenuScene::Load() {
 void GameScene::Respawn()
 {
     player->setPosition(ls::getTilePosition(ls::findTiles(ls::START)[0]));
+    player->setPosition(player->getPosition() + sf::Vector2f(12.0f, 12.0f));
     player->getCompatibleComponent<ActorMovementComponent>()[0]
         ->setSpeed(150.0f);
 
@@ -55,6 +56,7 @@ void GameScene::Respawn()
     for (auto& g : ghosts) {
         g->setPosition(
             ls::getTilePosition(ghost_spawns[rand() % ghost_spawns.size()]));
+        g->setPosition(g->getPosition() + sf::Vector2f(12.0f, 12.0f));
         g->getCompatibleComponent<ActorMovementComponent>()[0]->setSpeed(100.0f);
     }
 }
@@ -64,8 +66,15 @@ void GameScene::Update(double dt)
     if (Keyboard::isKeyPressed(Keyboard::Tab)) {
         activeScene = menuScene;
     }
+    
     _ents.Update(dt);
     UpdateScore();
+
+    for (auto& g : ghosts) {
+        if (sqrt(pow(g->getPosition().y - player->getPosition().y, 2) + pow(g->getPosition().x - player->getPosition().x, 2)) < 10.0f) {
+            Respawn();
+        }
+    }
 }
 
 void GameScene::Render()
@@ -84,7 +93,6 @@ void GameScene::Load()
         s->setShape<sf::CircleShape>(12.f);
         s->getShape().setFillColor(Color::Yellow);
         s->getShape().setOrigin(Vector2f(12.f, 12.f));
-
         pl->addComponent<PlayerMovementComponent>();
 
         player = pl;
@@ -106,7 +114,6 @@ void GameScene::Load()
         s->getShape().setOrigin(Vector2f(12.f, 12.f));
 
         ghost->addComponent<EnemyAIComponent>();
-        
         ghosts.push_back(ghost);
         _ents.list.push_back(ghost);
     }
@@ -116,5 +123,5 @@ void GameScene::Load()
 
 void GameScene::UpdateScore()
 {
-    cout << "update score" << endl;
+    //cout << "update score" << endl;
 }
